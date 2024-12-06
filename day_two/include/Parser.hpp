@@ -14,8 +14,6 @@ class Parser {
       DESCENDING,
       NOR_INCREASING_NOR_DECREASING,
       INCREASING_AND_DECREASING,
-      SAFE,
-      UNSAFE
     };
     Parser(const std::string &filename);
     ~Parser();

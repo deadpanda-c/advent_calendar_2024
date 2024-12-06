@@ -90,7 +90,6 @@ bool Parser::isSafe(const std::vector<int> &v)
     if (gap > 3)
       return false;
 
-
   std::cout << "[";
   for (size_t i = 0; i < v.size() - 1; ++i)
     std::cout << v[i] << ",";
@@ -100,6 +99,8 @@ bool Parser::isSafe(const std::vector<int> &v)
 
 void Parser::parse()
 {
+  std::vector<int> copy;
+  std::vector<int> col;
   std::cout << "Parsing file: " << _filename << std::endl;
 
   _file.open(_filename);
@@ -108,22 +109,21 @@ void Parser::parse()
     return;
   }
 
-  std::vector<int> col;
 
   while (std::getline(_file, _line)) {
     col = split(_line, ' ');
 
     if (this->isSafe(col)) {
-      //std::cout << "Safe: ";
-     // for (size_t i = 0; i < col.size(); ++i)
-     //   std::cout << "[" << col[i] << "] ";
-      //std::cout << std::endl;
       _safe_count++;
     } else {
-      //std::cout << "Unsafe: ";
-     // for (size_t i = 0; i < col.size(); ++i)
-     //   std::cout << "[" << col[i] << "] ";
-      //std::cout << std::endl;
+      for (size_t i = 0; i < col.size(); ++i) {
+        copy = col;
+        copy.erase(copy.begin() + i);
+        if (this->isSafe(copy)) {
+          _safe_count++;
+          break;
+        }
+      }
     }
   }
 
@@ -149,12 +149,6 @@ std::ostream& operator<<(std::ostream &os, const Parser::State &state)
       break;
     case Parser::State::INCREASING_AND_DECREASING:
       os << "INCREASING_AND_DECREASING";
-      break;
-    case Parser::State::SAFE:
-      os << "SAFE";
-      break;
-    case Parser::State::UNSAFE:
-      os << "UNSAFE";
       break;
   }
   return os;
